@@ -95,13 +95,23 @@ In some systems, we care less about who we're speaking with than we do about wha
 
 libp2p provides a [content routing interface][interface_content_routing] for this purpose, with the primary stable implementation using the same [Kademlia][wiki_kademlia]-based DHT as used in peer routing.
 
-### 
+### 内容发现
+
+在某些系统中，我们不在乎与谁建立连接，而在乎他们可以为我们提供什么。 例如，我们可能需要一些特定的数据，但由于我们能够验证其完整性，因此我们不在乎从谁那里获取数据。
+
+libp2p 为此提供了一个 [内容路由接口] [interface_content_routing]，主要稳定的实现使用了与节点路由相同的基于 [Kademlia] [wiki_kademlia] 的 DHT。
 
 ### Messaging / PubSub
 
 Sending messages to other peers is at the heart of most peer-to-peer systems, and pubsub (short for publish / subscribe) is a very useful pattern for sending a message to groups of interested receivers.
 
 libp2p defines a [pubsub interface][interface_pubsub] for sending messages to all peers subscribed to a given "topic". The interface currently has two stable implementations; `floodsub` uses a very simple but inefficient  "network flooding" strategy, and [gossipsub](https://github.com/libp2p/specs/tree/master/pubsub/gossipsub) defines an extensible gossip protocol.  There is also active development in progress on [episub](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/episub.md), an extended `gossipsub` that is optimized for single source multicast and scenarios with a few fixed sources broadcasting to a large number of clients in a topic.
+
+### 消息 / 发布订阅
+
+向其他节点发送消息是大多数对端系统的核心，而 pubsub（发布/订阅的缩写）是一种将消息发送给感兴趣的接收者组的非常有用的模式。
+
+libp2p 定义了一个[发布订阅接口][interface_pubsub]，用于将消息发送到订阅给定“主题”的所有节点。 该接口目前有两个稳定的实现； `floodsub` 使用非常简单但效率低下的“网络泛洪”策略，[gossipsub](https://github.com/libp2p/specs/tree/master/pubsub/gossipsub) 定义了可扩展的八卦协议。 [episub](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/episub.md) 上也正在进行积极的开发，这是一种扩展的“ gossipsub”，已针对单源多播和一些固定源广播给一个主题中的大量客户的业务情景优化。
 
 [glossary]: {{< ref "/reference/glossary.md" >}}
 [definition_dht]: {{< ref "/reference/glossary.md#dht" >}}

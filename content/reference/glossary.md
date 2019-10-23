@@ -13,9 +13,23 @@ In such cases, it's possible to "bridge the gap" between peers, so long as each 
 
 Circuit relay is implemented in libp2p according to the [relay spec](https://github.com/libp2p/specs/tree/master/relay), which defines a wire protocol and addressing scheme for relayed connections.
 
+### 电路中继
+
+可利用有意愿并能够充当中介的第三方节点的帮助下，在无法直接通信的节点之间建立通信的方法。
+
+在许多现实世界的对端网络中，由于各种原因，可能无法在所有对端之间进行直接通信。 例如，一个或多个节点可能位于防火墙后面，或具有  [NAT遍历](#nat-traversal)  问题。 也许节点之间没有任何共同的  [传输协议](#transport)。
+
+在这种情况下，为了“弥合节点之间的鸿沟”，只要它们中的每一个都能够与愿意的中继节点建立连接。 如果我支持 TCP，而您支持 websocket，我们仍然可以在多协议中继的帮助下通信。
+
+电路中继根据 [中继规范](https://github.com/libp2p/specs/tree/master/relay) 在 libp2p 中实现，该协议定义了中继连接的有线协议和寻址方案。
+
 ### Client / Server
 
 A network architecture defined by the presence of central "server" programs which provide services and resources to a (usually much larger) set of "client" programs. Typically clients do not communicate directly with one another, instead routing all communications through the server, which is inherently the most privileged member of the network.
+
+### 客户端/服务端
+
+由中央“服务器”程序的存在所定义的网络体系结构，该程序为一组（通常更大）“客户端”程序提供服务和资源。 通常，客户端之间不会直接进行通信，而是通过服务器路由所有通信，而服务器本身就是网络中特权最高的成员。
 
 ### DHT
 
@@ -25,24 +39,49 @@ Since DHTs are a foundational primitive of many peer-to-peer systems, libp2p pro
 
 libp2p uses the DHT as the foundation for one of its [peer routing](#peer-routing) implementations, and systems built with libp2p often use the DHT to provide metadata about content, advertise service availability, and more.
 
+### 分布式哈希表
+
+一个[分布式哈希表](https://en.wikipedia.org/wiki/Distributed_hash_table)，其内容分布在整个参与节点的网络中。 与进程内哈希表非常相似，值与键相关联，并且可以由键检索。 大多数DHT以确定性方式将可寻址密钥空间的一部分分配给节点，从而可以高效地路由到负责给定密钥的节点。
+
+由于DHT是许多对等系统的基础原语，因此 libp2p 在 [Go](https://github.com/libp2p/go-libp2p-kad-dht) 和 [javascript](https://github.com/libp2p/js-libp2p-kad-dht) 中提供了一个基于 [Kademlia](https://en.wikipedia.org/wiki/Kademlia) 的 DHT 实现。
+
+libp2p 使用 DHT 作为其 [对端路由](#peer-routing) 实现之一的基础，并且由 libp2p 构建的系统经常使用 DHT 提供有关内容的元数据，广告服务可用性等。
+
 ### Connection
 
 A libp2p connection is a communication channel that allows peers to read and write data.
 
 Connections between peers are established via [transports](#transport), which can be thought of as "connection factories". For example, the TCP transport allows you to create connections that use TCP/IP as their underlying substrate.
 
+### 连接
+
+libp2p 连接是允许节点读取和写入数据的通信通道。
+
+通过 [传输](#transport) 建立节点之间的连接，可以将其视为“连接工厂”。 例如，TCP 传输允许您创建使用 TCP/IP 作为其底层基础的连接。
+
 ### Dial
 
 The process of opening a libp2p connection to another peer is known as "dialing", and accepting connections is known as ["listening"](#listen). Together, an implementation of dialing and listening forms a [transport](#transport).
+
+### 拨号
+
+打开与另一个节点的 libp2p 连接的过程称为“拨号”，而接受连接的过程称为 [“监听”](#listen)。 拨号和监听的实现共同构成一个 [传输](#transport)。
 
 ### Listen
 
 The process of accepting incoming libp2p connections is known as "listening", and it allows other peers to ["dial"](#dial) up and open network connections to your peer.
 
+### 监听
+
+接受传入的 libp2p 连接的过程称为“监听”，它允许其他节点建立[“拨号”](#dial) 并打开与节点的网络连接。
+
 ### mDNS
 
 [Multicast DNS](https://en.wikipedia.org/wiki/Multicast_DNS) is a protocol for service discovery on a local network. One of libp2p's [peer routing](#peer-routing) implementations leverages mDNS to discover local peers quickly and efficiently.
 
+### 多播DNS
+
+[多播DNS](https://en.wikipedia.org/wiki/Multicast_DNS) 是用于在本地网络上发现服务的协议。 libp2p 的 [对端路由](#peer-routing) 实现之一利用多播DNS快速有效地发现本地节点。
 
 ### multiaddr
 
@@ -54,10 +93,23 @@ Multiaddresses can be composed to describe multiple "layers" of addresses.
 
 For more detail, see [Concepts > Addressing](/concepts/addressing/), or the [multiaddr spec](https://github.com/multiformats/multiaddr), which has links to many implementations.
 
+### 多层地址
+
+"multiaddress"(通常缩写为"multiaddr") 是一种将多层寻址信息编码成单个“面向未来”的路径结构的约定。
+
+例如：`/ip4/127.0.0.1/udp/1234` 对两个协议及其基本寻址信息进行编码。`/ip4/127.0.0.1` 通知我们我们想要IPv4协议的 `127.0.0.1` 环回地址，而 `/udp/1234` 告诉我们希望将UDP数据包发送到端口 `1234`。
+
+可以构造多层地址来描述地址的多个“层”。
+
+更多详细信息，请参见 [概念>寻址](/concepts/addressing/) 或 [multiaddr规范](https://github.com/multiformats/multiaddr)，其中包含许多实现。
+
 ### Multiaddress
 
 See [multiaddr](#multiaddr)
 
+### 多地址
+
+参看 [多层地址](#multiaddr)
 
 ### Multihash
 
@@ -72,6 +124,20 @@ The most prominent use of multihashes in libp2p is in the [PeerId](#peerid), whi
 In IPFS, multihashes are a key component of the [CID, or content identifier](https://docs.ipfs.io/guides/concepts/cid/), and the "v0" version of CID is a "raw" multihash of a piece of content. A "modern" CID combines a multihash of some content with some compact contextualizing metadata, allowing content-addressed systems like IPFS to create more meaningful links between hash-addressed data. For more on the subject of hash-linked data structures in p2p systems, see [IPLD](https://ipld.io).
 
 Multihashes are often represented as [base58-encoded](https://en.wikipedia.org/wiki/Base58) strings, for example, `QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N`. The first two characters `Qm` are the multihash header for the SHA-256 hash algorithm with a length of 256 bits, and are common to all base58-encoded multihashes using SHA-256.
+
+### 多重哈希
+
+[多重哈希](https://github.com/multiformats/multihash) 是一种协定，用于以紧凑形式表示许多不同的 [密码散列函数](https://en.wikipedia.org/wiki/Cryptographic_hash_function) 的输出，适应未来变化的确定性编码。
+
+散列是许多系统（例如git）的核心，但许多系统仅存储散列输出本身，因为对散列函数的选择是系统的隐式设计参数。不幸的是，这使您很难对系统使用哪种哈希函数作出改变！
+
+多重哈希编码依据哈希函数的类型生成输出，以及以字节为长度的输出。这里用两个字节的标头添加到原始哈希输出，作为这两个字节的作用，标头允许当前和将来的系统通过利用公共库轻松地标识和验证许多哈希函数。添加新功能后，您可以更轻松地扩展应用程序或协议以支持它们，因为新旧散列输出将很容易彼此区分开。
+
+libp2p 中多重哈希的最主要用法是在 [PeerId](#peerid) 中，它包含对等方公钥的哈希。但是，使用 libp2p 构建的系统，尤其是 [IPFS](https://ipfs.io)，将多重哈希用于其他目的。在 IPFS 中，由于 IPFS 使用 libp2p 并共享相同的 `PeerId` 约定，因此多重哈希用于标识内容和其他节点。
+
+在 IPFS 中，多重哈希是 [CID或内容标识符](https://docs.ipfs.io/guides/concepts/cid/) 的关键组成部分，CID的 "v0" 版本是“原始”多重哈希一条内容。 “现代” CID将某些内容的多重哈希值与一些紧凑的上下文元数据结合在一起，从而允许诸如 IPFS 的内容寻址系统在哈希寻址数据之间创建更有意义的链接。有关对端系统中哈希链接数据结构的更多信息，请参见 [IPLD](https://ipld.io)。
+
+多重哈希通常表示为 [base58编码](https://en.wikipedia.org/wiki/Base58) 字符串，例如，`QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N`。前两个字符 `Qm` 是 SHA-256 哈希算法的多重哈希标头，长度为256位，对于使用 SHA-256 的所有 base58 编码的多重哈希都是通用的。
 
 ### Multiplexing
 

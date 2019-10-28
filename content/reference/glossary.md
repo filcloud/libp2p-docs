@@ -149,11 +149,27 @@ libp2p supports several implementations of stream multiplexing. The [mplex speci
 
 See [Stream Muxer Implementations](https://libp2p.io/implementations/#stream-muxers) for status of multiplexing across libp2p language implementations.
 
+### 复用
+
+复用 (或“复用”) 是指在单个逻辑“介质”上组合多个通信流的过程。例如，我们可以在单个TCP网络连接上维护多个独立的数据流，当然，它本身可以通过单个物理连接 (以太网，wifi等) 进行多路复用。
+
+多路复用允许节点通过单个连接提供许多 [协议](#protocol)，从而减少了网络开销，并使 [NAT遍历](#nat-遍历) 更加有效。
+
+libp2p 支持流复用的几种实现。[mplex规范](https://github.com/libp2p/specs/tree/master/mplex) 定义了一种简单的协议，其中包含多种语言的实现。其他受支持的复用协议包括 [yamux](https://github.com/hashicorp/yamux) 和 [spdy](https://www.chromium.org/spdy/spdy-whitepaper)。
+
+有关复用特性的 libp2p 语言实现状态，请参见 [Stream Muxer实现](https://libp2p.io/implementations/#stream-muxers)。
+
 ### multistream
 
 [multistream](https://github.com/multiformats/multistream) is a lightweight convention for "tagging" streams of binary data with a short header that identifies the content of the stream.
 
 libp2p uses multistream to identify the [protocols](#protocol) used for communication between peers, and a related project [multistream-select](https://github.com/multiformats/multistream-select) is used for [protocol negotiation](#protocol-negotiation).
+
+### 多流
+
+[多流](https://github.com/multiformats/multistream) 是一种轻量级约定，用于使用简短的标头“标记”二进制数据流，该标头标识流的内容。
+
+libp2p 使用多流标识节点之间进行通信的 [协议](#protocol)，并使用相关项目 [多流选择](https://github.com/multiformats/multistream-select) 进行 [协议协商](#protocol-negotiation)。
 
 ### NAT
 
@@ -164,6 +180,16 @@ An unfortunate effect of NAT in practice is that it's much easier to make outgoi
 This is less of an issue in a client / server model, because outgoing connections to the server give the router enough information to route the response back to the client where it needs to go.
 
 In the peer-to-peer model, accepting connections from other peers is often just as important as initiating them, which means that we often need our peers to be publicly reachable from the global internet. There are many viable approaches to [NAT Traversal](#nat-traversal), several of which are implemented in libp2p.
+
+### 网络地址转换
+
+[网络地址转换](https://en.wikipedia.org/wiki/Network_address_translation) 通常是地址从一个地址空间到另一个地址空间的映射，通常发生在私有网络与全球互联网的边界处。由于IPv4的地址空间非常有限，因此在IPv4网络（网络地址中仍然是主流）中尤其重要。使用 NAT，本地专用网络可以在内部网络中拥有大量地址，而仅消耗全球互联网中的一个公共IP地址。
+
+实际上，NAT 的不利影响是，从私有网络到公共网络的传出连接要比从外部传入要容易得多。这是因为在内部网络上监听的连接计算机需要明确告知路由器负责 NAT 的设备应将给定端口（操作系统网络层的 [复用](#multiplexing) 抽象）的流量转发给监听计算机。
+
+在客户端/服务器模型中，这不是问题，因为与服务器的传出连接为路由器提供了足够的信息，可将响应路由回需要发送到的客户端。
+
+在对端模型中，接受来自其他节点的连接通常与建立它们一样重要，这意味着我们经常需要节点可以从全球互联网公开访问。 [NAT遍历](#nat-traversal) 有许多可行的方法，其中几种在 libp2p 中已实现。
 
 ### NAT Traversal
 <!-- TODO(yusef): much of this can be moved to the NAT concept doc and this definition can be trimmed -->
